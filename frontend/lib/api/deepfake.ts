@@ -9,9 +9,9 @@ export async function detectDeepfake(
   file: File
 ): Promise<DeepfakeResponse> {
   const formData = new FormData();
-  formData.append("video", file);
+  formData.append("file", file);
 
-  const res = await fetch(`${API_URL}/predict`, {
+  const res = await fetch(`${API_URL}/predict/`, {
     method: "POST",
     body: formData,
   });

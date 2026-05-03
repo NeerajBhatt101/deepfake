@@ -100,26 +100,32 @@ export default function UploadBox() {
       toast.error("Upload failed. Please select a file.");
       return;
     }
-  
+
     setAnalyzing(true);
     setAnalysisStep("Extracting facial landmarks...");
-  
+
     setTimeout(() => setAnalysisStep("Scanning compression artifacts..."), 1500);
     setTimeout(() => setAnalysisStep("Evaluating GAN probability..."), 3000);
     setTimeout(() => setAnalysisStep("Generating authenticity score..."), 4500);
-  
+
     try {
       // REAL API CALL (NEW)
       const data = await detectDeepfake(file);
-  
-      const status = data.result; // "real" | "fake"
-      const percentage = Math.round((data.confidence || 0) * 100);
-  
+      console.log("Backend Response:", data);
+     // const status = data.result; // "real" | "fake"
+      // const percentage = Math.round((data.confidence || 0) * 100);
+      // const percentage = Math.round(data.confidence || 0);
+
+      
+
+      const status = data.result.toLowerCase();
+      const percentage = Math.round(data.confidence);
+
       toast.success("Analysis complete! Redirecting to report...");
-  
+
       // const reportId = data.id || Date.now();
       const reportId = crypto.randomUUID();
-  
+
       router.push(
         `/upload/${reportId}?fileName=${encodeURIComponent(
           file.name
@@ -142,11 +148,10 @@ export default function UploadBox() {
       onDrop={handleDrop}
       className={`relative group border-2 border-dashed rounded-2xl p-10 text-center transition-all duration-300
 
-      ${
-        dragActive
+      ${dragActive
           ? "border-cyan-400 bg-cyan-400/10 shadow-lg shadow-cyan-500/20 scale-[1.02]"
           : "border-[#265584] bg-[#0d1424] hover:border-cyan-400/50 hover:bg-[#101521]"
-      }
+        }
       `}
     >
       {/* hidden input */}
